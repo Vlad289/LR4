@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DesignStudio.BusinessLogic\DesignStudio.BusinessLogic.csproj" />
-    <ProjectReference Include="..\DesignStudio.Common\DesignStudio.Common.csproj" />
   </ItemGroup>
 
 </Project>

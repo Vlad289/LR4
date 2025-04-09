@@ -123,7 +123,7 @@ namespace DesignStudio
                             var portfolioItems = designService.GetPortfolioItems();
                             foreach (var item in portfolioItems)
                             {
-                                Console.WriteLine($"ID: {item.Id}, Назва: {item.Title}, , Послуга: {item.Service.Name}");
+                                Console.WriteLine($"ID: {item.Id}, Назва: {item.Title}, Послуга: {item.Service.Name}");
                             }
                             break;
 

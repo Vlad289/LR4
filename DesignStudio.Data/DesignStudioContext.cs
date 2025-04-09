@@ -26,9 +26,9 @@ namespace DesignStudio.Data
 
             // Зв'язок між PortfolioItem і Service
             modelBuilder.Entity<PortfolioItem>()
-        .HasOne(p => p.Service)
-        .WithMany(s => s.PortfolioItems)
-        .HasForeignKey(p => p.ServiceId);
+                .HasOne(p => p.Service)
+                .WithMany(s => s.PortfolioItems)
+                .HasForeignKey(p => p.ServiceId);
 
             base.OnModelCreating(modelBuilder);
         }
