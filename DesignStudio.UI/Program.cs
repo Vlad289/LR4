@@ -1,147 +1,151 @@
 ﻿using System;
-using System.Linq;
 using DesignStudio.BusinessLogic;
 using DesignStudio.Data;
 using DesignStudio.Data.Models;
+using DesignStudio.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace DesignStudio
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-            var connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=DesignStudioDB;Trusted_Connection=True;";
 
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.InputEncoding = System.Text.Encoding.UTF8;
+
+            var connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=DesignStudioDB;Trusted_Connection=True;";
             var optionsBuilder = new DbContextOptionsBuilder<DesignStudioContext>();
             optionsBuilder.UseSqlServer(connectionString);
 
             using (var context = new DesignStudioContext(optionsBuilder.Options))
             {
-                var designService = new DesignService(context);
-
-                bool running = true;
-
-                while (running)
+                using (var unitOfWork = new UnitOfWork(context))
                 {
-                    Console.WriteLine("Виберіть операцію:");
-                    Console.WriteLine("1. Додати нову послугу");
-                    Console.WriteLine("2. Створити нове замовлення");
-                    Console.WriteLine("3. Оновити замовлення");
-                    Console.WriteLine("4. Видалити замовлення");
-                    Console.WriteLine("5. Переглянути замовлення");
-                    Console.WriteLine("6. Переглянути послуги");
-                    Console.WriteLine("7. Додати елемент до портфоліо");
-                    Console.WriteLine("8. Переглянути портфоліо");
-                    Console.WriteLine("9. Вихід");
+                    var designService = new DesignService(unitOfWork);
 
-                    var choice = Console.ReadLine();
+                    bool running = true;
 
-                    switch (choice)
+                    while (running)
                     {
-                        case "1":
-                            Console.Write("Введіть назву послуги: ");
-                            var serviceName = Console.ReadLine();
-                            var newService = new Service { Name = serviceName };
-                            designService.AddService(newService);
-                            Console.WriteLine("Послуга додана!");
-                            break;
+                        Console.WriteLine("\nВиберіть операцію:");
+                        Console.WriteLine("1. Додати нову послугу");
+                        Console.WriteLine("2. Створити нове замовлення");
+                        Console.WriteLine("3. Оновити замовлення");
+                        Console.WriteLine("4. Видалити замовлення");
+                        Console.WriteLine("5. Переглянути замовлення");
+                        Console.WriteLine("6. Переглянути послуги");
+                        Console.WriteLine("7. Додати елемент до портфоліо");
+                        Console.WriteLine("8. Переглянути портфоліо");
+                        Console.WriteLine("9. Вихід");
 
-                        case "2":
-                            Console.WriteLine("Список послуг:");
-                            var services = designService.GetServices();
-                            foreach (var service in services)
-                            {
-                                Console.WriteLine($"ID: {service.Id}, Назва: {service.Name}");
-                            }
-                            Console.Write("Введіть ID послуги для замовлення: ");
-                            int serviceId = int.Parse(Console.ReadLine());
-                            designService.CreateOrder(serviceId);
-                            Console.WriteLine("Замовлення створено!");
-                            break;
+                        var choice = Console.ReadLine();
 
-                        case "3":
-                            Console.Write("Введіть ID замовлення для оновлення: ");
-                            int orderIdToUpdate = int.Parse(Console.ReadLine());
-                            Console.Write("Введіть нову суму замовлення: ");
-                            decimal newAmount = decimal.Parse(Console.ReadLine());
-                            designService.UpdateOrder(orderIdToUpdate, newAmount);
-                            Console.WriteLine("Замовлення оновлено!");
-                            break;
+                        switch (choice)
+                        {
+                            case "1":
+                                Console.Write("Введіть назву послуги: ");
+                                var serviceName = Console.ReadLine();
+                                var newService = new Service { Name = serviceName };
+                                designService.AddService(newService);
+                                Console.WriteLine("✅ Послуга додана!");
+                                break;
 
-                        case "4":
-                            Console.Write("Введіть ID замовлення для видалення: ");
-                            int orderIdToDelete = int.Parse(Console.ReadLine());
-                            designService.DeleteOrder(orderIdToDelete);
-                            Console.WriteLine("Замовлення видалено!");
-                            break;
+                            case "2":
+                                Console.WriteLine("Список послуг:");
+                                var services = designService.GetServices();
+                                foreach (var service in services)
+                                {
+                                    Console.WriteLine($"ID: {service.Id}, Назва: {service.Name}");
+                                }
 
-                        case "5":
-                            var orders = designService.GetOrders();
-                            foreach (var order in orders)
-                            {
-                                Console.WriteLine($"ID: {order.Id}, Клієнт: {order.CustomerName}, Сума: {order.TotalAmount}");
-                            }
-                            break;
+                                Console.Write("Введіть ID послуги для замовлення: ");
+                                int serviceId = int.Parse(Console.ReadLine());
+                                designService.CreateOrder(serviceId);
+                                break;
 
-                        case "6":
-                            var allServices = designService.GetServices();
-                            foreach (var service in allServices)
-                            {
-                                Console.WriteLine($"ID: {service.Id}, Назва: {service.Name}");
-                            }
-                            break;
+                            case "3":
+                                Console.Write("Введіть ID замовлення для оновлення: ");
+                                int orderIdToUpdate = int.Parse(Console.ReadLine());
+                                Console.Write("Введіть нову суму замовлення: ");
+                                decimal newAmount = decimal.Parse(Console.ReadLine());
+                                designService.UpdateOrder(orderIdToUpdate, newAmount);
+                                Console.WriteLine("✅ Замовлення оновлено!");
+                                break;
 
-                        case "7":
-                            // Додати елемент до портфоліо
-                            Console.WriteLine("Список послуг для елементів портфоліо:");
-                            var portfolioServices = designService.GetServices();
-                            foreach (var service in portfolioServices)
-                            {
-                                Console.WriteLine($"ID: {service.Id}, Назва: {service.Name}");
-                            }
-                            Console.Write("Введіть ID послуги для елемента портфоліо: ");
-                            int selectedServiceId = int.Parse(Console.ReadLine());
-                            Console.Write("Введіть назву елемента портфоліо: ");
-                            string portfolioTitle = Console.ReadLine();
-                            Console.Write("Введіть опис елемента портфоліо: ");
-                            string portfolioDescription = Console.ReadLine();
+                            case "4":
+                                Console.Write("Введіть ID замовлення для видалення: ");
+                                int orderIdToDelete = int.Parse(Console.ReadLine());
+                                designService.DeleteOrder(orderIdToDelete);
+                                Console.WriteLine("✅ Замовлення видалено!");
+                                break;
 
-                            var newPortfolioItem = new PortfolioItem
-                            {
-                                Title = portfolioTitle,
-                                ServiceId = selectedServiceId,
-                                ImageUrl = " "
-                            };
+                            case "5":
+                                var orders = designService.GetOrders();
+                                foreach (var order in orders)
+                                {
+                                    Console.WriteLine($"ID: {order.Id}, Клієнт: {order.CustomerName}, Сума: {order.TotalAmount}, Дата: {order.OrderDate}");
+                                }
+                                break;
 
-                            designService.AddPortfolioItem(newPortfolioItem);
-                            Console.WriteLine("Елемент портфоліо додано!");
-                            break;
+                            case "6":
+                                var allServices = designService.GetServices();
+                                foreach (var service in allServices)
+                                {
+                                    Console.WriteLine($"ID: {service.Id}, Назва: {service.Name}");
+                                }
+                                break;
 
-                        case "8":
-                            // Перегляд елементів портфоліо
-                            var portfolioItems = designService.GetPortfolioItems();
-                            foreach (var item in portfolioItems)
-                            {
-                                var displayServiceName = item.Service != null ? item.Service.Name : "Невідома послуга";
-                                Console.WriteLine($"ID: {item.Id}, Назва: {item.Title}, Послуга: {displayServiceName}");
-                            }
-                            break;
+                            case "7":
+                                Console.WriteLine("Список послуг:");
+                                var portfolioServices = designService.GetServices();
+                                foreach (var service in portfolioServices)
+                                {
+                                    Console.WriteLine($"ID: {service.Id}, Назва: {service.Name}");
+                                }
 
+                                Console.Write("Введіть ID послуги для елемента портфоліо: ");
+                                int selectedServiceId = int.Parse(Console.ReadLine());
+                                Console.Write("Введіть назву елемента портфоліо: ");
+                                string portfolioTitle = Console.ReadLine();
+                                Console.Write("Введіть опис елемента портфоліо: ");
+                                string portfolioDescription = Console.ReadLine();
 
+                                var newPortfolioItem = new PortfolioItem
+                                {
+                                    Title = portfolioTitle,
+                                    ImageUrl = " ", // заглушка
+                                    ServiceId = selectedServiceId
+                                };
 
-                        case "9":
-                            running = false;
-                            break;
+                                designService.AddPortfolioItem(newPortfolioItem);
+                                Console.WriteLine("✅ Елемент портфоліо додано!");
+                                break;
 
-                        default:
-                            Console.WriteLine("Невірний вибір!");
-                            break;
+                            case "8":
+                                var portfolioItems = designService.GetPortfolioItems();
+                                foreach (var item in portfolioItems)
+                                {
+                                    string serviceNameOutput = item.Service?.Name ?? "Невідома послуга";
+                                    Console.WriteLine($"ID: {item.Id}, Назва: {item.Title}, Послуга: {serviceNameOutput}");
+                                }
+                                break;
+
+                            case "9":
+                                running = false;
+                                break;
+
+                            default:
+                                Console.WriteLine("❌ Невірний вибір. Спробуйте ще раз.");
+                                break;
+                        }
                     }
                 }
             }
 
-            Console.WriteLine("Натисніть будь-яку клавішу для завершення...");
+            Console.WriteLine("\nНатисніть будь-яку клавішу для завершення...");
             Console.ReadKey();
         }
     }

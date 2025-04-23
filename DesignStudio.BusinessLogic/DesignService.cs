@@ -9,37 +9,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DesignStudio.BusinessLogic
 {
+    using DesignStudio.Data.Repositories;
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    public class DesignService
+    public class DesignService : IDesignService
     {
-        private readonly DesignStudioContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        // Конструктор для ініціалізації контексту
-        public DesignService(DesignStudioContext context)
+        public DesignService(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
-        // Додавання нової послуги
         public void AddService(Service service)
         {
-            _context.Services.Add(service);
-            _context.SaveChanges();
+            _unitOfWork.Services.Add(service);
+            _unitOfWork.Complete();
         }
 
-        // Отримати всі послуги
-        public List<Service> GetServices()
+        public IEnumerable<Service> GetServices()
         {
-            return _context.Services.ToList();
+            return _unitOfWork.Services.GetAll();
         }
 
-        // Створити нове замовлення
         public void CreateOrder(int serviceId)
         {
-            var service = _context.Services.Find(serviceId);
+            var service = _unitOfWork.Services.Get(serviceId);
             if (service == null)
             {
                 Console.WriteLine("Послугу з таким ID не знайдено.");
@@ -47,24 +44,22 @@ namespace DesignStudio.BusinessLogic
             }
 
             Console.Write("Введіть ім'я клієнта: ");
-            string customerName = Console.ReadLine();  // Додано введення імені клієнта
+            string customerName = Console.ReadLine();
 
             var order = new Order
             {
                 ServiceId = serviceId,
-                CustomerName = customerName,  // Використовуємо введене ім'я клієнта
+                CustomerName = customerName,
                 OrderDate = DateTime.Now
             };
 
-            _context.Orders.Add(order);
-            _context.SaveChanges();
-            Console.WriteLine("Замовлення створено!");
+            _unitOfWork.Orders.Add(order);
+            _unitOfWork.Complete();
         }
 
-        // Оновити замовлення
         public void UpdateOrder(int orderId, decimal newAmount)
         {
-            var order = _context.Orders.Find(orderId);
+            var order = _unitOfWork.Orders.Get(orderId);
             if (order == null)
             {
                 Console.WriteLine("Замовлення не знайдено.");
@@ -72,40 +67,36 @@ namespace DesignStudio.BusinessLogic
             }
 
             order.TotalAmount = newAmount;
-            _context.SaveChanges();
+            _unitOfWork.Complete();
         }
 
-        // Видалити замовлення
         public void DeleteOrder(int orderId)
         {
-            var order = _context.Orders.Find(orderId);
+            var order = _unitOfWork.Orders.Get(orderId);
             if (order == null)
             {
                 Console.WriteLine("Замовлення не знайдено.");
                 return;
             }
 
-            _context.Orders.Remove(order);
-            _context.SaveChanges();
+            _unitOfWork.Orders.Remove(order);
+            _unitOfWork.Complete();
         }
 
-        // Отримати всі замовлення
-        public List<Order> GetOrders()
+        public IEnumerable<Order> GetOrders()
         {
-            return _context.Orders.ToList();
+            return _unitOfWork.Orders.GetAll();
         }
 
-        // Додавання нового елемента в портфоліо
         public void AddPortfolioItem(PortfolioItem item)
         {
-            _context.PortfolioItems.Add(item);
-            _context.SaveChanges();
+            _unitOfWork.PortfolioItems.Add(item);
+            _unitOfWork.Complete();
         }
 
-        // Отримати всі елементи портфоліо
         public List<PortfolioItem> GetPortfolioItems()
         {
-            return _context.PortfolioItems.ToList();
+            return _unitOfWork.PortfolioItems.GetAll().ToList();
         }
     }
 
