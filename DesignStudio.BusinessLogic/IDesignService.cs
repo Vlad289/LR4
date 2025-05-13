@@ -9,6 +9,8 @@ namespace DesignStudio.BusinessLogic
 {
     public interface IDesignService
     {
+        List<PortfolioItem> GetPortfolioItems(); 
+        void AddPortfolioItem(PortfolioItem item);
         void AddService(Service service);
         void CreateOrder(int serviceId);
         void UpdateOrder(int orderId, decimal newAmount);

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignStudio.BusinessLogic"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignStudio.Data", "DesignStudio.Data\DesignStudio.Data.csproj", "{75F1AA1F-09EE-435E-9B17-A8858A19912D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignStudio.Tests", "DesignStudio.Tests\DesignStudio.Tests.csproj", "{8E81F8BF-FD2F-430E-BA0D-9324BD10978D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{75F1AA1F-09EE-435E-9B17-A8858A19912D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75F1AA1F-09EE-435E-9B17-A8858A19912D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75F1AA1F-09EE-435E-9B17-A8858A19912D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E81F8BF-FD2F-430E-BA0D-9324BD10978D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E81F8BF-FD2F-430E-BA0D-9324BD10978D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E81F8BF-FD2F-430E-BA0D-9324BD10978D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E81F8BF-FD2F-430E-BA0D-9324BD10978D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
