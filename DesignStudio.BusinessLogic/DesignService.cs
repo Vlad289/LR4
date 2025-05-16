@@ -34,7 +34,7 @@ namespace DesignStudio.BusinessLogic
             return _unitOfWork.Services.GetAll();
         }
 
-        public void CreateOrder(int serviceId)
+        public void CreateOrder(int serviceId, string customerName)
         {
             var service = _unitOfWork.Services.Get(serviceId);
             if (service == null)
@@ -42,9 +42,6 @@ namespace DesignStudio.BusinessLogic
                 Console.WriteLine("Послугу з таким ID не знайдено.");
                 return;
             }
-
-            Console.Write("Введіть ім'я клієнта: ");
-            string customerName = Console.ReadLine();
 
             var order = new Order
             {
@@ -56,6 +53,7 @@ namespace DesignStudio.BusinessLogic
             _unitOfWork.Orders.Add(order);
             _unitOfWork.Complete();
         }
+
 
         public void UpdateOrder(int orderId, decimal newAmount)
         {

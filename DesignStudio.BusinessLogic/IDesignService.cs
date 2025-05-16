@@ -12,7 +12,7 @@ namespace DesignStudio.BusinessLogic
         List<PortfolioItem> GetPortfolioItems(); 
         void AddPortfolioItem(PortfolioItem item);
         void AddService(Service service);
-        void CreateOrder(int serviceId);
+        void CreateOrder(int serviceId, string customerName);
         void UpdateOrder(int orderId, decimal newAmount);
         void DeleteOrder(int orderId);
         IEnumerable<Order> GetOrders();
